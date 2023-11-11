@@ -4,7 +4,7 @@ CLASSES_NUMER = 24
 
 MODEL_NAME = "slowfast_r50"
 MODEL_WEB_PATH = "facebookresearch/pytorchvideo"
-MODEL = '../models/epoch=2-step=3393.ckpt'
+MODEL = '../models/model_scripted.pth'
 
 
 SIDE_SIZE = 256
@@ -17,6 +17,10 @@ FRAMES_PER_SECOND = 30
 ALPHA = 4
 
 CLIP_DURATION = (NUM_FRAMES * SAMPLING_RATE) / FRAMES_PER_SECOND
-OUTPUT_CLASSES_NUMBER = 5
+OUTPUT_CLASSES_NUMBER = 1
 
-VIDEO_FORMATS = ['avi']
+VIDEO_FORMATS = ['avi', 'mp4']
+
+
+VIDEO_PART_FRAMES = 10
+VIDEO_PART_SAVE = 'tmp.mp4'
