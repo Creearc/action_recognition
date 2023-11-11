@@ -34,18 +34,16 @@ pip install imageio
 ```
 
 ## Cuda for Windows
-CUDA Toolkit
+CUDA Toolkit  
 [Прямая ссылка на скачивание](https://developer.nvidia.com/cuda-10.1-download-archive-base?target_os=Windows&target_arch=x86_64&target_version=10&target_type=exelocal)
 
-
-Cudnn archive
+Cudnn archive  
 [Архив версий cudnn](https://developer.nvidia.com/rdp/cudnn-archive)
 
-8.9.5 version
+Cudnn 8.9.5 version  
 [Ссылка на скачивание. Потребуется авторизация.](https://developer.nvidia.com/downloads/compute/cudnn/secure/8.9.5/local_installers/11.x/cudnn-windows-x86_64-8.9.5.30_cuda11-archive.zip)
 
-
-Torch versions with CUDA versions
+Torch versions with CUDA versions  
 [Ссылка на список версий pytorch и совместимых с ними версий CUDA](https://pytorch.org/get-started/previous-versions/)
 
 ```
