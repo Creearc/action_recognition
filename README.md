@@ -1,11 +1,29 @@
 # action_recognition
 ## Model
-
-
 ```
 https://pytorchvideo.org/docs/tutorial_classification
 ```
+## Установка библиотек
 
+Для нейронной сети
+```
+pip install pytorch-lightning==1.8.0
+pip install pytorchvideo==0.1.5
+```
+
+Для бэкэнда
+```
+pip install opencv-python==4.8.1.78
+pip install numpy==1.26.1
+pip install Flask==3.0.0
+```
+
+Для веба
+```
+pip install dash==2.14.1
+pip install dash_daq==2.32.0
+pip install imageio
+```
 
 ## Cuda for Windows
 CUDA Toolkit
