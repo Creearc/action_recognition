@@ -234,7 +234,7 @@ input[type="button"] {
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
-  background-color: rgba(146, 201, 243, 1.0) !important;
+  background-color: rgba(3, 254, 51, 1.0) !important;
   /*background-color: #96d600;*/
   border-radius: 4px;
   border: 1px solid #444;
@@ -253,7 +253,7 @@ input[type="reset"]:focus,
 input[type="button"]:focus {
   color: #555;
   border-color: #555;
-  background-color: rgba(146, 201, 243, 0.9) !important;
+  background-color: rgba(3, 254, 51, 0.9) !important;
   /*background-color: #a5e420;*/
   outline: 0; }
 .button.button-primary,

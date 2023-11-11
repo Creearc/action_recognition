@@ -3,6 +3,7 @@ import numpy as np
 #import dash
 #import plotly.express as px
 from dash import Dash, dcc, html, Input, Output, State, no_update, callback_context
+import dash_daq as daq
 from flask import Flask, send_from_directory
 import json
 from urllib.parse import quote as urlquote
@@ -28,10 +29,11 @@ app = Dash(server=server)
 app.title = 'Video action recognition (ver. 0.1)'
 app.layout = html.Div(
                     [
+                    html.Img(src='static/dino.png',
+                             style={'width': '8%', 'padding-top': '1%', 'padding-bottom': '0%'},
+                             alt="Logo"),
 
                     html.Div([
-                                # dcc.Store(id='annotation_store', data=[]),
-
                                 html.H2('Распознавание действий на видео'),
                                 dcc.Upload(
                                             id='upload_video',
@@ -55,10 +57,15 @@ app.layout = html.Div(
 
                                             multiple=False
                                         ),
+                                html.Br(),
+                                html.Div([daq.BooleanSwitch(id='boolean_switch',
+                                                  color="#b904e5",
+                                                  on=True)], style = {'width': '70px'}),
+                                html.Div('Включить режим обработки фрагментами'),
                                 html.H3("Загруженный файл"),
                                 html.Div(id='file_list', children="-"),
                                 html.Iframe(src='http://{}:8000/'.format('127.0.0.1'), # <--TODO
-                                            style={'width': '50%', 'height': '500px'}),
+                                            style={'width': '50%', 'height': '350px'}),
                                 html.H3("Распознанные классы"),
                                 html.Div(id='detected_classes', children="-"),
 
@@ -92,12 +99,16 @@ def uploaded_files():
     Output("file_list", "children"),
     Output("detected_classes", "children"),
     [Input("upload_video", "filename"), Input("upload_video", "contents")],
+    State("boolean_switch", "on")
 )
-def update_output(uploaded_filename, uploaded_file_content):
+def update_output(uploaded_filename, uploaded_file_content, switch_value):
 
     if uploaded_filename is not None and uploaded_file_content is not None:
         save_file(uploaded_filename, uploaded_file_content)
-        url = "http://127.0.0.1:8000/get?video=../uploaded/{}".format(uploaded_filename)# <--TODO
+        if switch_value:
+            url = "http://127.0.0.1:8000/long?video=../uploaded/{}".format(uploaded_filename)# <--TODO
+        else:
+            url = "http://127.0.0.1:8000/get?video=../uploaded/{}".format(uploaded_filename)# <--TODO
         response = requests.get(url=url)
         clss = '{}'.format(response.content.decode())
         return uploaded_filename, clss
