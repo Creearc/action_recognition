@@ -29,12 +29,6 @@ from torch.utils.data import DistributedSampler
 
 
 alpha = 4
-train_loss_file = "train_loss.txt"
-val_loss_file = "val_loss.txt"
-with open(train_loss_file, "w") as f:
-    f.write("")
-with open(val_loss_file, "w") as f:
-    f.write("")
 
 class PackPathway(torch.nn.Module):
     """
@@ -67,7 +61,7 @@ class KineticsDataModule(pytorch_lightning.LightningDataModule):
 
     _DATA_PATH = "./"
     _CLIP_DURATION = (num_frames * sampling_rate)/frames_per_second
-    _BATCH_SIZE = 8
+    _BATCH_SIZE = 2
     _NUM_WORKERS = 0  # Number of parallel processes fetching data
 
 
@@ -84,7 +78,7 @@ class KineticsDataModule(pytorch_lightning.LightningDataModule):
               transform=Compose(
                   [
                     UniformTemporalSubsample(num_frames),
-                    Lambda(lambda x: x / 255.0),
+                    #Lambda(lambda x: x / 255.0),
                     Normalize((0.45, 0.45, 0.45), (0.225, 0.225, 0.225)),
                     RandomShortSideScale(min_size=256, max_size=320),
                     RandomCrop(244),
@@ -120,11 +114,11 @@ class KineticsDataModule(pytorch_lightning.LightningDataModule):
               transform=Compose(
                   [
                     UniformTemporalSubsample(num_frames),
-                    Lambda(lambda x: x / 255.0),
+                    #Lambda(lambda x: x / 255.0),
                     Normalize((0.45, 0.45, 0.45), (0.225, 0.225, 0.225)),
                     RandomShortSideScale(min_size=256, max_size=320),
                     RandomCrop(244),
-                    #RandomHorizontalFlip(p=0.5),
+                    RandomHorizontalFlip(p=0.5),
                     PackPathway()
                   ]
                 ),
@@ -160,23 +154,21 @@ class VideoClassificationLightningModule(pytorch_lightning.LightningModule):
         super().__init__()
         #self.model = make_kinetics_resnet()
         model_name = "slowfast_r50"
-        #self.model = torch.hub.load("facebookresearch/pytorchvideo", model=model_name,
-        #                            pretrained=True)
-        self.model = torch.load("action_recognition/models/model_scripted_5ep.pth") # <-- TODO
+        self.model = torch.hub.load("facebookresearch/pytorchvideo", model=model_name,
+                                    pretrained=True)
 
         print(dir(self.model))
 ##        for d in self.model.state_dict():
 ##            print(d)
 
-##        for i in range(1, 6):
-##            self.model.blocks[i].requires_grad_ = False
+        for i in range(6):
+            self.model.blocks[i].requires_grad_ = False
         
         print(self.model.blocks[6].proj)
         self.model.blocks[6].proj = nn.Linear(in_features=2304, out_features=24, bias=True)
         print(self.model.blocks[6].proj)
 
         print(self.model.blocks[0])
-
 
     def forward(self, x):
         return self.model(x)
@@ -193,16 +185,12 @@ class VideoClassificationLightningModule(pytorch_lightning.LightningModule):
         # Log the train loss to Tensorboard
         self.log("train_loss", loss.item())
 
-        with open(train_loss_file, "a") as f:
-            f.write("{}\n".format(loss.item()))
         return loss
 
     def validation_step(self, batch, batch_idx):
         y_hat = self.model(batch["video"])
         loss = F.cross_entropy(y_hat, batch["label"])
         self.log("val_loss", loss)
-        with open(val_loss_file, "a") as f:
-            f.write("{}\n".format(loss.item()))
         return loss
 
     def configure_optimizers(self):
@@ -210,16 +198,15 @@ class VideoClassificationLightningModule(pytorch_lightning.LightningModule):
         Setup the Adam optimizer. Note, that this function also can return a lr scheduler, which is
         usually useful for training video models.
         """
-        return torch.optim.Adam(self.parameters(), lr=1e-2)
+        return torch.optim.Adam(self.parameters(), lr=1e-1)
 
 
 if __name__ == '__main__':
     def train():
         classification_module = VideoClassificationLightningModule()
         data_module = KineticsDataModule()
-        trainer = pytorch_lightning.Trainer(accelerator='gpu', devices=1, max_epochs=10)
+        trainer = pytorch_lightning.Trainer(max_epochs=1)
         trainer.fit(classification_module, data_module)
-        torch.save(classification_module.model, "./model_scripted_10ep.pth")
 
 
     train()
