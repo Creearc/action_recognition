@@ -4,3 +4,4 @@
 *.ckpt
 *.zip
 *.pth
+*__pycache__*
