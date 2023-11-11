@@ -1,3 +1,5 @@
+import frontend_config
+
 import os
 import numpy as np
 #import dash
@@ -16,7 +18,7 @@ from imageio import imread
 import requests
 
 
-UPLOAD_DIRECTORY = "../uploaded" # <--TODO
+UPLOAD_DIRECTORY = frontend_config.UPLOAD_DIRECTORY
 if not os.path.exists(UPLOAD_DIRECTORY):
     os.makedirs(UPLOAD_DIRECTORY)
 
@@ -106,9 +108,15 @@ def update_output(uploaded_filename, uploaded_file_content, switch_value):
     if uploaded_filename is not None and uploaded_file_content is not None:
         save_file(uploaded_filename, uploaded_file_content)
         if switch_value:
-            url = "http://127.0.0.1:8000/long?video=../uploaded/{}".format(uploaded_filename)# <--TODO
+            url = "http://{}:{}/long?video={}/{}".format(frontend_config.BACKEND_IP,
+                                                         frontend_config.BACKEND_PORT,
+                                                         frontend_config.UPLOAD_DIRECTORY,
+                                                         uploaded_filename)
         else:
-            url = "http://127.0.0.1:8000/get?video=../uploaded/{}".format(uploaded_filename)# <--TODO
+            url = "http://{}:{}/get?video={}/{}".format(frontend_config.BACKEND_IP,
+                                                         frontend_config.BACKEND_PORT,
+                                                         frontend_config.UPLOAD_DIRECTORY,
+                                                         uploaded_filename)
         response = requests.get(url=url)
         clss = '{}'.format(response.content.decode())
         return uploaded_filename, clss
@@ -116,4 +124,6 @@ def update_output(uploaded_filename, uploaded_file_content, switch_value):
 
 
 if __name__ == "__main__":
-    app.run_server(host='0.0.0.0', port=8050, debug=True)# <--TODO
+    app.run_server(host=frontend_config.IP,
+                   port=frontend_config.PORT,
+                   debug=True)

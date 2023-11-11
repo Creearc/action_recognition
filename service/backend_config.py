@@ -1,11 +1,13 @@
+IP = '0.0.0.0'
+PORT = 8000
+
 DEVICE = 'cuda:0'
 CLASSES = '../data/h_classnames.json'
 CLASSES_NUMER = 24
 
 MODEL_NAME = "slowfast_r50"
 MODEL_WEB_PATH = "facebookresearch/pytorchvideo"
-MODEL = '../models/model_scripted.pth'
-
+MODEL = '../models/model_scripted_5ep.pth'
 
 SIDE_SIZE = 256
 MEAN = [0.45, 0.45, 0.45]

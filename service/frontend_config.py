@@ -1,0 +1,7 @@
+IP = '0.0.0.0'
+PORT = 8050
+
+BACKEND_IP = '127.0.0.1'
+BACKEND_PORT = 8000
+
+UPLOAD_DIRECTORY = "../uploaded"

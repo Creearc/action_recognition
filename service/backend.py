@@ -1,6 +1,7 @@
 import backend_config
 
 import threading
+import time
 from flask import Flask, request, render_template, Response
 
 import torch
@@ -24,7 +25,6 @@ import torch.nn as nn
 
 import numpy as np
 import cv2
-import imutils
 
 
 lock = threading.Lock()
@@ -52,9 +52,11 @@ def generate():
             if not (img_q is None):
                 frame = img_q.copy()
             else:
+                time.sleep(0.1)
                 continue
         (flag, encodedImage) = cv2.imencode(".jpg", frame)
         if not flag:
+            time.sleep(0.1)
             continue
         
         yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' +
@@ -216,4 +218,6 @@ end_sec = start_sec + backend_config.CLIP_DURATION
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host=backend_config.IP,
+            port=backend_config.PORT,
+            debug=True)
